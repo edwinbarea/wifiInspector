@@ -1,4 +1,4 @@
 wifiInspector
 =============
 
-Monitor del Sistema M_K_BY_EDWIN
+Monitor del Sistema para la administracion de R_M_K_BY_EDWIN
