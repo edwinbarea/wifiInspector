@@ -38,7 +38,7 @@ function nav($active){ ?>
                     <ul class="dropdown-menu dropdown-messages">                    
                         <!-- <li class="divider"></li> -->
                         <li>
-                            <a href="index.php?op=Out"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            <a href="?op=Out"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->

@@ -50,6 +50,7 @@ if (!isset($_SESSION["logged_corp"]) && !isset($_SESSION["logged_sist"]) && !iss
     <!-- Custom Fonts -->
     <!-- Imagenes -->
     <link href="/mikrotik/include/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
     <!-- ########################### AQUI ACABA TODO #######################################-->
           
     <!-- Validacion usuario-->
@@ -84,7 +85,7 @@ if (!isset($_SESSION["logged_corp"]) && !isset($_SESSION["logged_sist"]) && !iss
               viewAP($ipNeighbor,$_SESSION["id_hotel"]);
             }else{
               echo('<h1 class="page-header">Seleccione un AP por favor');
-              neighborList("1");
+              neighborList($_SESSION["id_hotel"]);
             }
             ?>
           </div>
@@ -98,6 +99,27 @@ if (!isset($_SESSION["logged_corp"]) && !isset($_SESSION["logged_sist"]) && !iss
     ================================================== -->
     <!-- jQuery Version 1.11.0 -->
     <script src="/mikrotik/include/js/jquery-1.11.0.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+      $("#registrarAP").click(function(){
+        $.ajax({
+          url: "addAP.php",
+          type: "post",
+          data: "mac="+ $("#lb_mac").text() + "&nombre=" + $("#lb_nombre").text() + "&ip=" + $("#lb_ip").text() + "&marca=" + $("#lb_marca").text() + "&modelo=" + $("#lb_modelo").text() + "&hotel=" + $("#lb_hotel").val() + "&red=" + $("#lb_tipoRed").val() ,
+          success: function(datos){            
+              if(datos == "ok"){
+                var url = $(location).attr('href');              
+                $(location).attr('href',url);
+              }else{
+                alert(datos);
+              }
+          }
+        });
+        var string = $("#lb_mac").text() + "_" + $("#lb_nombre").text() + "_" + $("#lb_ip").text() + "_" + $("#lb_marca").text() + "_" + $("#lb_modelo").text() + "_" + $("#lb_hotel").val() + "_" + $("#lb_tipoRed").val() + "_" ;
+        // alert(string);
+      });      
+    });
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/mikrotik/include/js/bootstrap.min.js"></script>

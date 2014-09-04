@@ -13,6 +13,20 @@ function login($user,$pass){
         	$idUsuario = ""; $idUsuario = $infoUser["idUsuario"];
         	$idNivel = ""; $idNivel = $infoUser["idNivel"];     	
         	$idHotel = ""; $idHotel = $infoUser["idHotel"];
+
+        	if($validar!= "0"){				
+				switch($idNivel){				
+					case 1:$_SESSION["logged_corp"] = $idUsuario;
+				   			$_SESSION["id_hotel"] = $idHotel;
+					break;
+					case 2:$_SESSION["logged_sist"] = $idUsuario;						
+				   			$_SESSION["id_hotel"] = $idHotel;			
+					break;
+					case 3:$_SESSION["logged_user"] = $idUsuario;						
+				   			$_SESSION["id_hotel"] = $idHotel;			
+					break;
+				}
+			}
         }
         $conexion->close();
         $sentencia->close();
@@ -21,20 +35,7 @@ function login($user,$pass){
         $conexion->close();
         $sentencia->close();
         return false;
-    }
-	if($validar!= "0"){				
-		switch($idNivel){				
-			case 1:$_SESSION["logged_corp"] = $idUsuario;
-				   $_SESSION["id_hotel"] = $idHotel;
-			break;
-			case 2:$_SESSION["logged_sist"] = $idUsuario;						
-				   $_SESSION["id_hotel"] = $idHotel;			
-			break;
-			case 3:$_SESSION["logged_user"] = $idUsuario;						
-				   $_SESSION["id_hotel"] = $idHotel;			
-			break;
-		}
-	}
+    }	
 }
 
 ?>
