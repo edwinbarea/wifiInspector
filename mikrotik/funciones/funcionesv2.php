@@ -242,10 +242,10 @@ function neighborList($localidad){
                 if($existeAP == 0){
                   echo("<tr class='danger'>");
                     echo('<td class="col-md-2"><center>');                      
-                        echo($rows[$a]["4"]);
+                      echo($rows[$a]["3"]);
                     echo('</center></td>');                    
                     echo('<td class="col-md-2"><center>');
-                      echo("---.---.---.---");
+                      echo($rows[$a]["2"]);
                     echo('</center></td>');
                     echo('<td class="col-md-2"><center>');
                       echo($rows[$a]["1"]);
@@ -260,6 +260,7 @@ function neighborList($localidad){
       echo('</div>');
     echo('</div>');    
   }
+$API->disconnect();
 }
 
 function viewAP($ipAP,$localidad){
@@ -404,6 +405,185 @@ function viewAP($ipAP,$localidad){
   }else{
     echo("Ocurrio un problema al conectarnos");
   }
+$API->disconnect();
+}
 
+function hotspotServer($localidad){
+  try{        
+    $conexion = crearConexion();
+    $consulta = "SELECT * FROM hotel WHERE idHotel='$localidad'";
+    $sentencia = $conexion->query($consulta);        
+    while ($infoHotel = $sentencia->fetch_array()) { 
+      $ip = ""; $ip = $infoHotel["gateway"];                 
+      $user = ""; $user = $infoHotel["user_mk"];
+      $pass = ""; $pass = $infoHotel["pass_mk"];
+      $resort = ""; $resort = $infoHotel["nombre"];         
+    }
+    $conexion->close();
+    $sentencia->close();
+  }catch(Exception $e){
+      echo $e;
+      $conexion->close();
+      $sentencia->close();
+      return false;
+  }
+  
+  $API = new routeros_api();
+  $API->debug = false;
+
+  if ($API->connect($ip, $user, $pass)) {  
+     echo('<h1 class="page-header">Datos de Hotspot '.$resort.'</h1>');
+    echo('<div class="row">');
+
+      echo('<div class="col-md-6">');
+        echo('<div class="panel panel-default">');
+          echo('<div class="panel-heading">');
+            echo('<h3 class="panel-title">Datos Server</h3>');
+          echo('</div>');
+          echo('<div class="panel-body">');
+            $API->write("/ip/hotspot/getall",true);
+            $READ = $API->read(false);
+            $ARRAY = $API->parse_response($READ);
+            echo('<p>Nombre: <mark>'.$ARRAY[0]["name"].'</mark></p>');
+            echo('<p>Interface: <mark>'.$ARRAY[0]["interface"].'</mark></p>');
+            echo('<p>Pool: <mark>'.$ARRAY[0]["address-pool"].'</mark></p>');
+            echo('<p>Perfil: <mark>'.$ARRAY[0]["profile"].'</mark></p>');
+            $perfilPredeterminado = $ARRAY[0]["profile"];
+            echo('<p>TimeOut: <mark>'.$ARRAY[0]["idle-timeout"].'</mark></p>');
+          echo('</div>');
+        echo('</div>');
+      echo('</div>');
+      echo('<div class="col-md-6">');
+        echo('<div class="panel panel-default">');
+          echo('<div class="panel-heading">');
+            echo('<h3 class="panel-title">Datos Perfil Predeterminado</h3>');
+          echo('</div>');
+          echo('<div class="panel-body">');
+            $API->write("/ip/hotspot/profile/getall",true);
+            $READ = $API->read(false);
+            $ARRAY = $API->parse_response($READ);
+            for ($i=0; $i < count($ARRAY) ; $i++) { 
+              if($perfilPredeterminado == $ARRAY[$i]["name"]){
+                echo('<p>Nombre: <mark>'.$ARRAY[$i]["name"].'</mark></p>');
+                echo('<p>Direccion de Red: <mark>'.$ARRAY[$i]["hotspot-address"].'</mark></p>');
+                echo('<p>Directorio HTML: <mark>'.$ARRAY[$i]["html-directory"].'</mark></p>');
+                echo('<p>Login tipos: <mark>'.$ARRAY[$i]["login-by"].'</mark></p>');
+                echo('<p>Tiempo de Vida Cookie: <mark>'.$ARRAY[$i]["http-cookie-lifetime"].'</mark></p>');                
+              }
+            }
+          echo('</div>');
+        echo('</div>');
+      echo('</div>');
+    echo('</div>');
+
+  }
+$API->disconnect();
+}
+
+function hotspotUser($localidad){
+  try{        
+    $conexion = crearConexion();
+    $consulta = "SELECT * FROM hotel WHERE idHotel='$localidad'";
+    $sentencia = $conexion->query($consulta);        
+    while ($infoHotel = $sentencia->fetch_array()) { 
+      $ip = ""; $ip = $infoHotel["gateway"];                 
+      $user = ""; $user = $infoHotel["user_mk"];
+      $pass = ""; $pass = $infoHotel["pass_mk"];
+      $resort = ""; $resort = $infoHotel["nombre"];         
+    }
+    $conexion->close();
+    $sentencia->close();
+  }catch(Exception $e){
+      echo $e;
+      $conexion->close();
+      $sentencia->close();
+      return false;
+  }
+  
+  $API = new routeros_api();
+  $API->debug = false;
+
+  if ($API->connect($ip, $user, $pass)) {  
+     echo('<h1 class="page-header">Lista de Usuarios Hotspot '.$resort.'</h1>');
+    echo('<div class="row">');
+
+      echo('<div class="col-md-6">');
+        echo('<div class="panel panel-default">');
+          echo('<div class="panel-heading">');
+            echo('<h3 class="panel-title">Datos AP</h3>');
+          echo('</div>');
+          echo('<div class="panel-body">');
+            $API->write("/ip/hotspot/user/getall",true);
+            $READ = $API->read(false);
+            $ARRAY = $API->parse_response($READ);
+            echo('<table class="table table-bordered">');
+              echo('<tr class="info">');
+                echo('<th>');
+                  echo('Accion');
+                echo('</th>');
+                echo('<th>');
+                  echo('Usuario');
+                echo('</th>');
+                echo('<th>');
+                  echo('Perfil');
+                echo('</th>');
+                echo('<th>');
+                  echo('Uptime');
+                echo('</th>');
+              echo('</tr>');
+              for($i=0;$i<count($ARRAY);$i++){        
+                $first = $ARRAY[$i];        
+                if($first["disabled"]=="true"){
+                echo('<tr class="active text-muted">');
+                  echo('<td><center>');
+                    echo('<button type="button" name="activar" class="btn btn-success btn-sm active" value="'.$i.'">A</button>');
+                  echo('</center></td>');
+                }else{
+                echo('<tr>');
+                  echo('<td><center>');
+                    echo('<button type="button" name="desactivar" class="btn btn-danger btn-sm" value="'.$i.'">D</button>');
+                  echo('</center></td>');                  
+                }
+                  echo('<td>');
+                    echo('<button type="button" name="modificar" class="btn btn-link"  value="'.$i.'">'.$first["name"].'</button>');
+                  echo('</td>');
+                  echo('<td>');
+                    echo($first["profile"]);
+                  echo('</td>');
+                  echo('<td>');
+                    echo($first["uptime"]);
+                  echo('</td>');
+                echo('</tr>');
+              }
+            echo("</table>");
+          echo('</div>');
+        echo('</div>');
+      echo('</div>');
+    echo('</div>');
+
+  }
+$API->disconnect();
+}
+
+function editarUserHotspot(){
+  echo('<div id="miModelo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Editar datos en hotspot</h4>
+              </div>
+              <div id="modelBody" class="modal-body">
+              <form role="form" name="formNuevoPro" style="width:250px; margin: 0 auto;">
+                <input type="text" name="nombre" id="name" placeholder="Nombre Usuario" required class="form-control" ><br>
+                <input type="text" name="pass" id="pass" placeholder="Password" required class="form-control" ><br>
+              </div>
+              <div class="modal-footer">                
+                <button type="button" id="save" class="btn btn-primary">Save changes</button>
+              </div>
+              </form>
+            </div>
+        </div>
+      </div>');
 }
 ?>

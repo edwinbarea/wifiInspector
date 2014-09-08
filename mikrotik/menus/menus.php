@@ -78,6 +78,33 @@ function nav($active){ ?>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>   
+                    <li>
+                        <a <?php if($active=="hotspot"){ echo('class="active"'); } ?>  href="#"><i class="fa fa-wrench fa-fw"></i> Hotspot <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/mikrotik/src/hotspot/index.php">Server Profiles</a>
+                            </li>
+                            <li>
+                                <a href="index.php?task=1">User</a>
+                            </li>
+                            <li>
+                                <a href="#">User Profile</a>
+                            </li>
+                            <li>
+                                <a href="#">Active</a>
+                            </li>
+                            <li>
+                                <a href="#">Hosts</a>
+                            </li>
+                            <li>
+                                <a href="#">Bindings</a>
+                            </li>
+                            <li>
+                                <a href="#">Cookies</a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>   
                     <li>                        
                         <a <?php if($active=="hotel"){ echo('class="active"'); } ?> href="#"><i class="fa fa-sitemap fa-fw"></i>Hotel</a>
                     </li>

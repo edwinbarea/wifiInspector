@@ -4,10 +4,7 @@
  * RouterOS PHP API class v1.4
  * Author: Denis Basta
  * Contributors:
- *    Nick Barnes
- *    Ben Menking (ben [at] infotechsc [dot] com)
- *    Jeremy Jefferson (http://jeremyj.com)
- *    Cristian Deluxe (djcristiandeluxe [at] gmail [dot] com)
+ *    Edwin Barea
  *
  * http://www.mikrotik.com
  * http://wiki.mikrotik.com/wiki/API_PHP_class
